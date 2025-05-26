@@ -1,16 +1,6 @@
-# assistant/views.py
-import requests, logging
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
-
-logger = logging.getLogger(__name__)
-
-OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-API_KEY = "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"
-
 @csrf_exempt
 def chat_view(request):
-    answer = ""
+    history = []
 
     if request.method == "POST":
         user_query = request.POST.get("query", "").strip()
@@ -42,4 +32,9 @@ def chat_view(request):
                 logger.exception("OpenRouter error")
                 answer = f"[Error contacting AI: {e}]"
 
-    return render(request, "index.html", {"answer": answer})
+            history.append({
+                "question": user_query,
+                "answer": answer
+            })
+
+    return render(request, "index.html", {"history": history})
