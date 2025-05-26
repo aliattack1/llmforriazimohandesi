@@ -4,11 +4,14 @@ def chat_view(request):
 
     if request.method == "POST":
         user_query = request.POST.get("query", "").strip()
+        systemdoc = ''
+        with open('doc.txt', 'r') as file:
+            systemdoc = file.read()
         if user_query:
             payload = {
                 "model": "meta-llama/llama-3.3-8b-instruct:free",
                 "messages": [
-                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "system", "content": "You are a helpful assistant. answer questions using this document: " + systemdoc},
                     {"role": "user",   "content": user_query}
                 ]
             }
